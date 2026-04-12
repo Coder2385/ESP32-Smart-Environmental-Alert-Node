@@ -1,46 +1,74 @@
+# ESP32-Smart-Environmental-Alert-Node 
 
-This directory is intended for project specific (private) libraries.
-PlatformIO will compile them to static libraries and link into the executable file.
+A standalone IoT system that measures environmental data (temperature & humidity) and displays it live on an OLED screen and in a web browser — without internet or external cloud services. When temperature reaches or exceeds 28°C, it automatically triggers a local alert: an LED turns on, the OLED shows “Warm!”, and the web page highlights the value in red. Perfect for beginners who want to visualize sensor data locally over Wi-Fi while learning how IoT devices can act—not just observe.
 
-The source code of each library should be placed in a separate directory
-("lib/your_library_name/[Code]").
+| ![Setup](images/setup.jpg) | ![OLED](images/oled.jpg)
 
-For example, see the structure of the following example libraries `Foo` and `Bar`:
+---
 
-|--lib
-|  |
-|  |--Bar
-|  |  |--docs
-|  |  |--examples
-|  |  |--src
-|  |     |- Bar.c
-|  |     |- Bar.h
-|  |  |- library.json (optional. for custom build options, etc) https://docs.platformio.org/page/librarymanager/config.html
-|  |
-|  |--Foo
-|  |  |- Foo.c
-|  |  |- Foo.h
-|  |
-|  |- README --> THIS FILE
-|
-|- platformio.ini
-|--src
-   |- main.c
+## ✨ Features
 
-Example contents of `src/main.c` using Foo and Bar:
-```
-#include <Foo.h>
-#include <Bar.h>
+- 🌡️ Measures temperature and humidity using a BME280 sensor  
+- 🖥️ Displays live data on an SSD1306 OLED screen (128x64)  
+- 📶 Creates its own WiFi hotspot (`MijnESP32`)  
+- 🌐 Local web server at `http://192.168.4.1`  
+- ♻️ Auto-refreshes every 2 seconds (via JavaScript)  
+- ⚠️ Error handling for sensor failures or loose connections  
+- 🔒 No sensitive data in main code.  
+- 🧠 Non-blocking timing with `millis()` → web server stays responsive
+- 🌡️ Smart alert system: Reacts to high temperature with LED, OLED, and web feedback. 
 
-int main (void)
-{
-  ...
-}
+---
 
-```
+> ⚠️ **Why no `°` symbol?**  
+> The `Adafruit_SSD1306` library has limited support for special characters like the degree symbol (`°`). To keep the code simple and reliable for beginners, the OLED displays only `"C"` instead of `"°C"`.  
+>   
+> ✅ The **web version** (in your browser) **does show** the correct `°C` symbol thanks to HTML encoding.
 
-The PlatformIO Library Dependency Finder will find automatically dependent
-libraries by scanning project source files.
+This is a common limitation in embedded displays — not a bug!
 
-More information about PlatformIO Library Dependency Finder
-- https://docs.platformio.org/page/librarymanager/ldf.html
+## 🧰 Components Required
+
+- ESP32 Development Board (e.g., ESP32 DevKit)
+- BME280 temperature/humidity sensor (I²C)
+- SSD1306 OLED display (128x64, I²C)
+- Breadboard and jumper wires
+- Micro-USB cable
+- RED LED
+- 2x 220 Ohm Resistor
+- 1x pushbutton
+
+---
+
+## 🔌 Wiring (I²C Bus)
+
+Both sensors share the same I²C pins (button added):
+
+| ESP32 Pin | Function | Connected To        |
+|----------|----------|--------------------- |
+| 3.3V     | Power    | VCC of BME280 + OLED |
+| GND      | Ground   | GND of BME280 + OLED + Button(one side) |
+| GPIO21   | SDA      | SDA of BME280 + OLED |
+| GPIO22   | SCL      | SCL of BME280 + OLED |
+| GPIO4    | Input    | Button(other side)   |
+
+Note: The button is connected between GPIO 4 and GND. The code enables the internal pull-up resistor, so no external resistor is required.
+
+
+> 💡 Ensure both devices use **different I²C addresses** (BME280: `0x76`, OLED: `0x3C`).
+
+---
+
+## ▶️ Usage
+
+1. **Install required libraries** in Arduino IDE:  
+   - `Adafruit BME280 Library`  
+   - `Adafruit SSD1306`  
+   - `Adafruit GFX Library`
+
+> 2. Create `secrets.h` by copying `secrets.h.example` to `secrets.h`, then edit the values:
+> ```bash
+> cp secrets.h.example secrets.h
+> ```
+
+> Open `secrets.h` and replace `"MijnESP32"` and `"12345678"` with your WiFi name and password.
