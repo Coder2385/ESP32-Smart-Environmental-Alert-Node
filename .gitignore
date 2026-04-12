@@ -37,5 +37,9 @@
 *.out
 *.app
 
+never.h
+secrets.h
+*.bin
+
 # debug information files
 *.dwo
