@@ -1,5 +1,7 @@
 # ESP32-Smart-Environmental-Alert-Node 
 
+NOTE!: THIS IS AN EXPANSION OF ESP32-LOCAL-SENSOR-NODE
+
 A standalone IoT system that measures environmental data (temperature & humidity) and displays it live on an OLED screen and in a web browser — without internet or external cloud services. When temperature reaches or exceeds 28°C, it automatically triggers a local alert: an LED turns on, the OLED shows “Warm!”, and the web page highlights the value in red. Perfect for beginners who want to visualize sensor data locally over Wi-Fi while learning how IoT devices can act—not just observe.
 
 | ![Setup](images/setup.jpg) | ![OLED](images/oled.jpg)
